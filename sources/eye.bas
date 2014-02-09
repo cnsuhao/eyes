@@ -31,7 +31,7 @@
 310     LET t = 2 * PI * RND()
 320     LET l = EYES_SCATTER * RND()
 330     LET eyes_positions_x[i] = l * COS(t)
-340     LET eyes_positions_y[i] = EYES_START_POSITION
+340     LET eyes_positions_y[i] = RND() * EYES_START_POSITION
 350     LET eyes_positions_z[i] = l * SIN(t)
 360     POSITION_OBJECT(eyes[i], eyes_positions_x[i], eyes_positions_y[i], eyes_positions_z[i])
 370     ROTATION_OBJECT(eyes[i], 0, 0, EYE_MODEL_CORRECT_ANGLE)
