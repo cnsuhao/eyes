@@ -10,13 +10,13 @@
 100
 110 REM Game constants:
 120 DIM eye_model_path = "data/eye.ao"
-130 LET PLAYER_SPEED = 2.5
+130 LET PLAYER_SPEED = 3
 140 LET EYE_MODEL_CORRECT_ANGLE = 180
 150 LET NUMBER_OF_EYES = 10
 160 LET EYES_SCATTER = 10
 170 LET EYES_START_POSITION = 25
-180 LET eyes_minimal_speed = 5
-190 LET eyes_maximal_speed = 10
+180 LET eyes_minimal_speed = 10
+190 LET eyes_maximal_speed = 20
 200
 210 REM Creating eyes:
 220 DIM eyes[10]
@@ -67,6 +67,12 @@
 670     LET i = 0
 680     IF i > NUMBER_OF_EYES - 1 THEN 740
 690         LET eyes_positions_y[i] = eyes_positions_y[i] - eyes_speeds[i] * delta_time
+691         IF eyes_positions_y[i] > 0 THEN 700
+692         LET t = 2 * PI * RND()
+693         LET l = EYES_SCATTER * RND()
+694         LET eyes_positions_x[i] = player_position_x + l * COS(t)
+695         LET eyes_positions_y[i] = EYES_START_POSITION
+696         LET eyes_positions_z[i] = player_position_z + l * SIN(t)
 700         POSITION_OBJECT(eyes[i], eyes_positions_x[i], eyes_positions_y[i], eyes_positions_z[i])
 710
 720         LET i = i + 1
