@@ -14,46 +14,66 @@
 140 LET EYE_MODEL_CORRECT_ANGLE = 180
 150 LET NUMBER_OF_EYES = 10
 160 LET EYES_SCATTER = 10
-170 LET EYES_START_POSITION = 10
-180
-190 REM Creating eyes:
-200 DIM eyes[10]
-210 LET i = 0
-220 IF i > NUMBER_OF_EYES - 1 THEN 330
-230     LET eyes[i] = LOAD_OBJECT(eye_model_path)
-240     LET t = 2 * PI * RND()
-250     LET l = EYES_SCATTER * RND()
-260     LET eye_x = l * COS(t)
-270     LET eye_z = l * SIN(t)
-280     POSITION_OBJECT(eyes[i], eye_x, EYES_START_POSITION, eye_z)
-290     ROTATION_OBJECT(eyes[i], 0, 0, EYE_MODEL_CORRECT_ANGLE)
-300
-310     LET i = i + 1
-320     GOTO 220
-330
-340 REM Main loop:
-350 LET player_position_x = 0
-360 LET player_position_z = 0
-370 LET last_time = TIMER()
-380 IF KEYSTATE(ESCAPE_KEY) = TRUE THEN 580
-390     REM Get delta time:
-400     LET current_time = TIMER()
-410     LET delta_time = current_time - last_time
-420     LET last_time = current_time
-430
-440     REM Control of player:
-450     IF KEYSTATE(LEFT_KEY) = FALSE THEN 470
-460         LET player_position_x = player_position_x - PLAYER_SPEED * delta_time
-470     IF KEYSTATE(RIGHT_KEY) = FALSE THEN 490
-480         LET player_position_x = player_position_x + PLAYER_SPEED * delta_time
-490     IF KEYSTATE(DOWN_KEY) = FALSE THEN 510
-500         LET player_position_z = player_position_z - PLAYER_SPEED * delta_time
-510     IF KEYSTATE(UP_KEY) = FALSE THEN 530
-520         LET player_position_z = player_position_z + PLAYER_SPEED * delta_time
-530     POSITION_CAMERA(player_position_x, 0, player_position_z)
+170 LET EYES_START_POSITION = 25
+180 LET eyes_minimal_speed = 5
+190 LET eyes_maximal_speed = 10
+200
+210 REM Creating eyes:
+220 DIM eyes[10]
+230 DIM eyes_positions_x[10]
+240 DIM eyes_positions_y[10]
+250 DIM eyes_positions_z[10]
+260 DIM eyes_speeds[10]
+270 LET i = 0
+280 IF i > NUMBER_OF_EYES - 1 THEN 440
+290     REM Load of eye:
+300     LET eyes[i] = LOAD_OBJECT(eye_model_path)
+310     LET t = 2 * PI * RND()
+320     LET l = EYES_SCATTER * RND()
+330     LET eyes_positions_x[i] = l * COS(t)
+340     LET eyes_positions_y[i] = EYES_START_POSITION
+350     LET eyes_positions_z[i] = l * SIN(t)
+360     POSITION_OBJECT(eyes[i], eyes_positions_x[i], eyes_positions_y[i], eyes_positions_z[i])
+370     ROTATION_OBJECT(eyes[i], 0, 0, EYE_MODEL_CORRECT_ANGLE)
+380
+390     REM Select of eye speed:
+400     LET eyes_speeds[i] = RND() * (eyes_maximal_speed - eyes_minimal_speed) + eyes_minimal_speed
+410
+420     LET i = i + 1
+430     GOTO 280
+440
+450 REM Main loop:
+460 LET player_position_x = 0
+470 LET player_position_z = 0
+480 LET last_time = TIMER()
+490 IF KEYSTATE(ESCAPE_KEY) = TRUE THEN 780
+500     REM Get delta time:
+510     LET current_time = TIMER()
+520     LET delta_time = current_time - last_time
+530     LET last_time = current_time
 540
-550     SYNC()
-560     GOTO 380
-570
-580 REM Dummy:
-590 RND()
+550     REM Control of player:
+560     IF KEYSTATE(LEFT_KEY) = FALSE THEN 580
+570         LET player_position_x = player_position_x - PLAYER_SPEED * delta_time
+580     IF KEYSTATE(RIGHT_KEY) = FALSE THEN 600
+590         LET player_position_x = player_position_x + PLAYER_SPEED * delta_time
+600     IF KEYSTATE(DOWN_KEY) = FALSE THEN 620
+610         LET player_position_z = player_position_z - PLAYER_SPEED * delta_time
+620     IF KEYSTATE(UP_KEY) = FALSE THEN 640
+630         LET player_position_z = player_position_z + PLAYER_SPEED * delta_time
+640     POSITION_CAMERA(player_position_x, 0, player_position_z)
+650
+660     REM Move of eyes:
+670     LET i = 0
+680     IF i > NUMBER_OF_EYES - 1 THEN 740
+690         LET eyes_positions_y[i] = eyes_positions_y[i] - eyes_speeds[i] * delta_time
+700         POSITION_OBJECT(eyes[i], eyes_positions_x[i], eyes_positions_y[i], eyes_positions_z[i])
+710
+720         LET i = i + 1
+730         GOTO 680
+740
+750     SYNC()
+760     GOTO 490
+770
+780 REM Dummy:
+790 RND()
